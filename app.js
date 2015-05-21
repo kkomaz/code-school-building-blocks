@@ -1,31 +1,16 @@
 var express = require('express');
 var app = express();
 
-var cities = {
-  'Lotopia': 'Rough and mountainous',
-  'Caspiana': 'Sky-top island',
-  'Indigo': 'Vibrant and thriving',
-  'Paradise': 'Lush, green plantation',
-  'Flotilla': 'Bustling urban oasis'
-};
+var bodyParser = require('body-parser');
+var parseUrlencoded = bodyParser.urlencoded({ extended: false });
 
-app.param('name',function(request,response,next){
-  request.cityName = parseCityName(request.params.name);
-  next();
-});
-
-app.get('/cities/:name', function (request, response) {
-  var cityInfo = cities[request.cityName];
-  if(cityInfo) {
-    response.json(cityInfo);
+app.post('/cities', parseUrlencoded, function (request, response) {
+  if (request.body.description.length > 4){
+    var city = createCity(request.body.name, request.body.description);
+    response.status(201).json(city);
   } else {
-    response.status(404).json("City not found");
+    response.status(400).json("Invalid City");
   }
 });
 
-function parseCityName(name){
-  var parsedName = name[0].toUpperCase() + name.slice(1).toLowerCase();
-  return parsedName;
-}
-
-app.listen(3000);                                                                                                                                                                                                                                                                                                            
+app.listen(3000);

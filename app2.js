@@ -1,4 +1,3 @@
-var express = require('express');
 var app = express();
 
 app.param("year", function(request, response, next){
